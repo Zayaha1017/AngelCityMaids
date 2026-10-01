@@ -1,9 +1,12 @@
+const INSTAGRAM_URL = "https://www.instagram.com/angelcitymaid/";
+
 const routes = {
  "/": renderHomePage,
   "/services": renderServicesPage,
   "/pricing": renderPricingPage,
   "/about": renderAboutPage,
   "/booking": renderBookingPage,
+  "/quote": renderQuotePage,
   "/terms": renderTermsPage,
   "/privacy": renderPrivacyPage,
 };
@@ -291,6 +294,44 @@ const cities = [
   "Glendale",
   "Studio City",
   "Culver City",
+  "Malibu",
+  "Venice",
+  "Marina Del Rey",
+  "Manhattan Beach",
+  "Redondo Beach",
+  "North Hollywood",
+];
+
+const differences = [
+  {
+    icon: "user-check",
+    title: "Trusted Team",
+    paragraphs: [
+      "Our cleaners are highly trained and carefully selected to ensure your home receives exceptional care and a consistently high-quality clean. For your peace of mind and safety, all team members undergo background checks before joining our team.",
+    ],
+  },
+  {
+    icon: "tag",
+    title: "True Flat Rate",
+    paragraphs: [
+      "The price you see is the price you pay. As long as the information provided about your home and cleaning needs is accurate, there will be no unexpected charges on your cleaning day. Enjoy transparent, straightforward pricing with confidence.",
+    ],
+  },
+  {
+    icon: "spray-can",
+    title: "Supplies Included",
+    paragraphs: [
+      "We bring everything needed to deliver an exceptional clean. Our team uses high-quality professional tools and supplies, with eco-friendly cleaning products available upon request. We also use a color-coded cloth system designed to help prevent cross-contamination and maintain the highest standards of cleanliness throughout your home.",
+    ],
+  },
+  {
+    icon: "shield-check",
+    title: "Fully Insured",
+    paragraphs: [
+      "At Angel City Maid, the safety and security of your home and the well-being of our employees are among our highest priorities. That’s why we are fully insured with both General Liability Insurance and Workers’ Compensation Insurance, as required by California law.",
+      "You can have peace of mind knowing that from the moment our professional cleaners step into your home, your property is treated with the utmost care, respect, and professionalism. Our team is committed to providing reliable, careful, and high-quality service you can trust.",
+    ],
+  },
 ];
 
 const logo = document.getElementById("logoLink");
@@ -307,6 +348,17 @@ logo?.addEventListener("click", (e) => {
     updateLogo();
   }, 0);
 });
+// Photos live in img/<folder>/<folder>-01.jpg, -02.jpg, ...
+// servicePhotos(folder, [2, 5]) returns those numbers;
+// servicePhotos(folder, count, skip) returns 1..count minus the ones in skip
+function servicePhotos(folder, countOrNumbers, skip = []) {
+  const numbers = Array.isArray(countOrNumbers)
+    ? countOrNumbers
+    : Array.from({ length: countOrNumbers }, (_, i) => i + 1).filter((n) => !skip.includes(n));
+
+  return numbers.map((n) => `img/${folder}/${folder}-${String(n).padStart(2, "0")}.jpg`);
+}
+
 const detailedServices = [
   {
     id: "standard",
@@ -349,10 +401,8 @@ const detailedServices = [
   title: "Move-in/Move-out Cleaning",
   description:
     "Whether you’re preparing a home for new beginnings or leaving it spotless for the next resident, our move-in/move-out cleaning service ensures every space is fresh, sanitized, and ready. We focus on the details that matter most during transitions, helping take one more thing off your checklist during a busy move.",
-images: [
-  "img/LivingrmGrey.jpg",
-  "img/BlueSofa.jpg"
-],
+    images: servicePhotos("move-in-out", [3, 7]),
+    gallery: servicePhotos("move-in-out", 9, [3, 7]),
   time: "5 - 10 hours",
   includes: [
     "Full Property Cleaning",
@@ -380,10 +430,8 @@ images: [
     title: "Office Cleaning",
     description:
       "Our office cleaning services are designed to keep your workspace spotless, organized, and welcoming every day. We specialize in reliable, detail-oriented cleaning tailored to your business needs. From daily maintenance to deep cleaning, our trained professionals use high-quality products and proven techniques to ensure every corner of your office shines.",
-    images: [
-      "img/cleanersOffice.png",
-      "img/cleaningOffice.png"
-    ],
+    images: servicePhotos("office", [2, 3]),
+    gallery: servicePhotos("office", 8, [2, 3]),
     time: "",
     includes: [
       "General Cleaning",
@@ -417,10 +465,8 @@ images: [
     title: "AirBnB Cleaning",
     description:
       "Elevate your guest experience with our luxury Airbnb cleaning services. We deliver immaculate, hotel-quality results with meticulous attention to every detail—from pristine linens to perfectly styled spaces. Designed for hosts who expect excellence, our reliable and discreet service ensures your property is always flawless, inviting, and five-star ready.",
-    images: [
-      "img/Bedrm.jpg",
-      "img/cleaningCounter.png"
-    ],
+    images: servicePhotos("airbnb", [13, 15]),
+    gallery: servicePhotos("airbnb", 18, [13, 15]),
     time: "",
     includes: [
       "Full Property Cleaning",
@@ -464,9 +510,8 @@ images: [
     title: "Post-Construction Cleaning",
     description:
       "Transform your newly built or renovated space into a flawless, move-in-ready environment. Our post-construction cleaning services deliver meticulous, detail-driven results—removing dust, debris, and residue to reveal a pristine finish. With a focus on precision and excellence, we ensure every surface is polished to perfection, leaving your space clean, refined, and ready to impress.",
-    images: [
-      "https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=80"
-    ],
+    images: servicePhotos("post-construction", [2, 26]),
+    gallery: servicePhotos("post-construction", 26, [2, 26]),
     time: "",
     includes: [
       "Detailed Dust Removal",
@@ -657,7 +702,7 @@ function renderSingleServicePage(serviceId) {
             <div class="reveal-left">
               ${images.length ? `
                 <div class="service-image-grid ${images.length > 1 ? "double" : "single"}">
-                  ${images.map(img => `<img src="${img}" alt="${service.title}" />`).join("")}
+                  ${images.map(img => `<img src="${img}" alt="${service.title}" data-lightbox />`).join("")}
                 </div>
               ` : ""}
             </div>
@@ -690,6 +735,23 @@ function renderSingleServicePage(serviceId) {
         </div>
       </section>
 
+      ${service.gallery?.length ? `
+        <section class="section section-muted">
+          <div class="container">
+            <div class="text-center reveal">
+              <span class="section-label">Gallery</span>
+              <h2 class="section-title">Our Recent Work</h2>
+            </div>
+
+            <div class="service-gallery">
+              ${service.gallery.map(img => `
+                <img src="${img}" alt="${service.title} by Angel City Maid" loading="lazy" data-lightbox />
+              `).join("")}
+            </div>
+          </div>
+        </section>
+      ` : ""}
+
       ${renderCTASection()}
     </main>
   `;
@@ -715,9 +777,81 @@ function updateNavState(path) {
 
 function initPageFeatures(path) {
   initRevealAnimations();
+  initInstagramLinks();
   initFAQ();
   initTestimonials();
   initContactForm();
+  initQuoteForm();
+  initLightbox();
+}
+
+function initLightbox() {
+  // Close it if the visitor navigated (e.g. back button) while it was open
+  if (document.getElementById("lightbox")) closeLightbox();
+
+  const photos = [...document.querySelectorAll("#app img[data-lightbox]")];
+  if (!photos.length) return;
+
+  let lightbox = document.getElementById("lightbox");
+  if (!lightbox) {
+    lightbox = document.createElement("div");
+    lightbox.id = "lightbox";
+    lightbox.className = "lightbox";
+    lightbox.innerHTML = `
+      <button class="lightbox-close" aria-label="Close">&times;</button>
+      <button class="lightbox-nav prev" aria-label="Previous photo">&#8249;</button>
+      <img alt="" />
+      <button class="lightbox-nav next" aria-label="Next photo">&#8250;</button>
+    `;
+    document.body.appendChild(lightbox);
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox || e.target.classList.contains("lightbox-close")) closeLightbox();
+      if (e.target.classList.contains("prev")) showLightboxPhoto(-1);
+      if (e.target.classList.contains("next")) showLightboxPhoto(1);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (!lightbox.classList.contains("open")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") showLightboxPhoto(-1);
+      if (e.key === "ArrowRight") showLightboxPhoto(1);
+    });
+  }
+
+  photos.forEach((photo, index) => {
+    photo.addEventListener("click", () => {
+      lightbox.photos = photos;
+      lightbox.index = index;
+      showLightboxPhoto(0);
+      lightbox.classList.add("open");
+      document.body.style.overflow = "hidden";
+    });
+  });
+}
+
+function showLightboxPhoto(step) {
+  const lightbox = document.getElementById("lightbox");
+  const count = lightbox.photos.length;
+  lightbox.index = (lightbox.index + step + count) % count;
+  lightbox.querySelector("img").src = lightbox.photos[lightbox.index].src;
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+// BookingKoala's embed.js only resizes iframes present at page load,
+// so attach its resizer to the quote iframe each time the page renders
+function initQuoteForm() {
+  const iframe = document.querySelector(".quote-iframe");
+  if (!iframe || typeof window.iFrameResize !== "function") return;
+
+  window.iFrameResize(
+    { checkOrigin: false, heightCalculationMethod: "bodyOffset" },
+    iframe
+  );
 }
 
 function initRevealAnimations() {
@@ -910,6 +1044,21 @@ function renderCTASection() {
   `;
 }
 
+// Small version links to the About page; large version sits in the About page section
+function renderGoogleBadge(large = false) {
+  const content = `
+    <span class="google-badge-icon"><i data-lucide="check"></i></span>
+    <span class="google-badge-text">
+      <strong>Google Guaranteed</strong>
+      <small>Screened &amp; verified by Google</small>
+    </span>
+  `;
+
+  return large
+    ? `<div class="google-badge google-badge-lg">${content}</div>`
+    : `<a href="#/about" class="google-badge" aria-label="Google Guaranteed - learn more">${content}</a>`;
+}
+
 function renderHeroSection() {
   return `
     <section class="hero">
@@ -921,7 +1070,10 @@ function renderHeroSection() {
       <div class="container">
         <div class="hero-content reveal">
 
-          <span class="hero-badge">Premium Cleaning Services in LA</span>
+          <div class="hero-badges">
+            <span class="hero-badge">Premium Cleaning Services in LA</span>
+            ${renderGoogleBadge()}
+          </div>
 
           <h1 class="hero-title">
             Professional House Cleaning You Can <span>Trust</span>
@@ -934,7 +1086,7 @@ function renderHeroSection() {
 
           <div class="hero-actions">
             <a href="#/booking" class="btn btn-primary">Book a Cleaning</a>
-            <a href="#/pricing" class="btn btn-secondary">Get a Free Quote</a>
+            <a href="#/quote" class="btn btn-secondary">Get a Free Quote</a>
           </div>
 
           <div class="hero-trust">
@@ -1177,6 +1329,45 @@ function renderFAQ() {
   `;
 }
 
+const instagramIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>`;
+
+function renderInstagramSection() {
+  const previews = [
+    "img/post-construction/post-construction-26.jpg",
+    "img/office/office-03.jpg",
+    "img/post-construction/post-construction-02.jpg",
+    "img/airbnb/airbnb-13.jpg",
+  ];
+
+  return `
+    <section class="section instagram-section">
+      <div class="container instagram-wrap">
+        <div class="instagram-text reveal-left">
+          <div class="instagram-badge">${instagramIcon}</div>
+          <h2 class="section-title">Follow Us on Instagram</h2>
+          <p>
+            See our latest work from homes and offices across Los Angeles.
+          </p>
+          <a href="#" data-instagram target="_blank" rel="noopener" class="btn btn-primary instagram-btn">
+            ${instagramIcon}
+            <span>Follow Us on Instagram</span>
+          </a>
+        </div>
+
+        <a href="#" data-instagram target="_blank" rel="noopener" class="instagram-grid reveal-right" aria-label="Open our Instagram">
+          ${previews.map((img) => `<img src="${img}" alt="Angel City Maid cleaning work" loading="lazy" />`).join("")}
+        </a>
+      </div>
+    </section>
+  `;
+}
+
+function initInstagramLinks() {
+  document.querySelectorAll("[data-instagram]").forEach((link) => {
+    link.href = INSTAGRAM_URL;
+  });
+}
+
 function renderHomePage() {
   return `
     <main>
@@ -1185,6 +1376,7 @@ function renderHomePage() {
       ${renderWhyChooseUs()}
       ${renderHowItWorks()}
       ${renderTestimonials()}
+      ${renderInstagramSection()}
       ${renderServiceAreas()}
       ${renderFAQ()}
       ${renderCTASection()}
@@ -1239,6 +1431,44 @@ function renderAboutPage() {
         </div>
       </section>
 
+      <section class="section section-lg">
+        <div class="container">
+          <div class="text-center reveal">
+            <span class="section-label">Why Angel City Maid</span>
+            <h2 class="section-title">What Makes Us Different</h2>
+          </div>
+
+          <div class="different-grid">
+            ${differences.map((item) => `
+              <article class="different-card reveal">
+                <div class="feature-icon">
+                  <i data-lucide="${item.icon}"></i>
+                </div>
+                <h3>${item.title}</h3>
+                ${item.paragraphs.map((text) => `<p>${text}</p>`).join("")}
+              </article>
+            `).join("")}
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-brand">
+        <div class="container">
+          <div class="guarantee-box reveal-scale">
+            ${renderGoogleBadge(true)}
+            <div class="guarantee-text">
+              <h2>We Are Google Guaranteed</h2>
+              <p>
+                We are proud to be a Google Guaranteed cleaning company. This designation means our business has completed Google’s required screening and verification process, giving customers added confidence when choosing our services.
+              </p>
+              <p>
+                At Angel City Maid, we are committed to providing dependable, professional, and high-quality cleaning services. Our Google Guaranteed status is another way we demonstrate our commitment to building trust with every customer.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section section-lg" style="background: var(--navy-900);">
         <div class="container stats-grid">
           <div class="stat-box reveal">
@@ -1248,13 +1478,8 @@ function renderAboutPage() {
           </div>
           <div class="stat-box reveal">
             <i data-lucide="home"></i>
-            <div class="value">10k+</div>
+            <div class="value">1,000+</div>
             <div class="label">Homes Cleaned</div>
-          </div>
-          <div class="stat-box reveal">
-            <i data-lucide="star" style="color: var(--gold-400);"></i>
-            <div class="value">1.5k+</div>
-            <div class="label">5-Star Reviews</div>
           </div>
           <div class="stat-box reveal">
             <i data-lucide="users"></i>
@@ -1290,6 +1515,36 @@ function renderBookingPage() {
             loading="lazy"
             scrolling="yes">
           </iframe>
+        </div>
+      </section>
+    </main>
+  `;
+}
+
+function renderQuotePage() {
+  return `
+    <main class="booking-page">
+      <section class="section section-lg">
+        <div class="container">
+          <div class="text-center reveal">
+            <h1 class="section-title">Get a Free Quote</h1>
+            <p class="section-subtitle">
+              Tell us a little about your home and what you need. We'll get back to you with a personalized quote — no commitment required.
+            </p>
+          </div>
+
+          <div class="quote-card reveal">
+            <iframe
+              class="quote-iframe"
+              src="https://angelcitymaid.bookingkoala.com/contact-us?embed=true"
+              title="Angel City Maids Quote Request Form"
+              scrolling="auto">
+            </iframe>
+          </div>
+
+          <p class="booking-fallback-text">
+            Ready to schedule now? <a href="#/booking">Book your cleaning online</a> or call us at 213-881-3300.
+          </p>
         </div>
       </section>
     </main>
