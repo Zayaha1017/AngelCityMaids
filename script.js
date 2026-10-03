@@ -401,8 +401,8 @@ const detailedServices = [
   title: "Move-in/Move-out Cleaning",
   description:
     "Whether you’re preparing a home for new beginnings or leaving it spotless for the next resident, our move-in/move-out cleaning service ensures every space is fresh, sanitized, and ready. We focus on the details that matter most during transitions, helping take one more thing off your checklist during a busy move.",
-    images: servicePhotos("move-in-out", [3, 7]),
-    gallery: servicePhotos("move-in-out", 9, [3, 7]),
+    images: servicePhotos("move-in-out", [6, 2]),
+    gallery: servicePhotos("move-in-out", 10, [6, 2]),
   time: "5 - 10 hours",
   includes: [
     "Full Property Cleaning",
@@ -1420,6 +1420,44 @@ function renderAboutPage() {
         </div>
       </section>
 
+      <section class="section section-lg ceo-section">
+        <div class="container ceo-wrap">
+          <div class="ceo-photo reveal-left">
+            <img src="img/ceo.webp" alt="Victoria, Founder and CEO of Angel City Maid" loading="lazy" />
+          </div>
+
+          <div class="ceo-letter reveal-right">
+            <span class="section-label">A Message from Our CEO</span>
+            <h2 class="section-title">Welcome to Angel City Maid!</h2>
+            <p>
+              What started as a one-person cleaning service has grown into a dedicated team of four proudly serving residents, commercial businesses, and apartment communities throughout Los Angeles. Our journey has been built one client, one home, and one relationship at a time — with a simple belief that professional cleaning should be more than just making a space look clean. It should create comfort, trust, and peace of mind.
+            </p>
+            <p>
+              As a woman-owned business, I am incredibly proud of how far Angel City Maid has come. We are committed to providing consistent professionalism, dependable service, and quality results while continuously learning and evolving with the cleaning industry.
+            </p>
+            <p>
+              But our commitment goes beyond our customers. We care deeply about the people behind our service. Our team is at the heart of Angel City Maid, and we believe that taking care of our employees, supporting their well-being, and creating a respectful and positive work environment allows us to deliver better service to every customer we serve.
+            </p>
+            <p>
+              We understand that inviting a cleaning team into your home, business, or community requires trust. That is why we focus on professionalism, attention to detail, communication, and accountability in everything we do.
+            </p>
+            <p>
+              As we continue to grow, our goal remains simple: to raise the standard of cleaning service in Los Angeles while building a company our customers and our team can be proud of.
+            </p>
+            <p>
+              Thank you for choosing Angel City Maid and for allowing us to be part of your space.
+            </p>
+
+            <div class="ceo-signoff">
+              <span>With gratitude,</span>
+              <strong class="ceo-name">Victoria</strong>
+              <span>Founder &amp; CEO</span>
+              <span>Angel City Maid</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="section section-brand">
         <div class="container">
           <div class="mission-box reveal-scale">
@@ -1536,7 +1574,7 @@ function renderQuotePage() {
           <div class="quote-card reveal">
             <iframe
               class="quote-iframe"
-              src="https://angelcitymaid.bookingkoala.com/contact-us?embed=true"
+              src="https://angelcitymaid.bookingkoala.com/short-form/?sf_id=6aadaf61f48deddb419c902f&language=en"
               title="Angel City Maids Quote Request Form"
               scrolling="auto">
             </iframe>
