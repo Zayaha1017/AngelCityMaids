@@ -1397,29 +1397,6 @@ function renderAboutPage() {
         </div>
       </section>
 
-      <section class="section section-lg">
-        <div class="container story-wrap">
-          <div class="text reveal-left">
-            <h2 class="section-title">Our Story</h2>
-            <p>
-              Angel City Maid was founded on a simple premise: finding a reliable, high-quality house cleaner shouldn't be a chore.
-              We saw a gap in the Los Angeles market for a cleaning service that combined modern convenience with old-fashioned attention to detail.
-            </p>
-            <p>
-              What started as a small team of three dedicated cleaners has grown into one of LA's most trusted premium home service companies.
-              We've cleaned thousands of homes, but our core values remain exactly the same.
-            </p>
-            <p>
-              We believe that a clean home is a happy home. It reduces stress, improves health, and gives you back your most valuable asset: time.
-            </p>
-          </div>
-
-          <div class="reveal-right">
-            <img src="img/cleaningKitchen.png" alt="About us" />
-          </div>
-        </div>
-      </section>
-
       <section class="section section-lg ceo-section">
         <div class="container ceo-wrap">
           <div class="ceo-photo reveal-left">
