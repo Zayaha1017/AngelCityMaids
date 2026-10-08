@@ -105,6 +105,16 @@ function renderPrivacyPage() {
   `;
 }
 
+// Google Ads "Book appointment" conversion. Google's "page load" rule can't see
+// #/booking (the site never reloads), so it's sent here when the booking page renders.
+function trackBookingConversion() {
+  if (typeof gtag !== "function") return;
+
+  gtag('event', 'conversion', {
+    send_to: 'AW-18351844689/1q7mCLq2rYwdENHa665E'
+  });
+}
+
 function trackPageView(path) {
   if (typeof gtag !== "function") return;
 
@@ -664,6 +674,7 @@ function renderRoute() {
   }
 
   trackPageView(path);
+  if (path === "/booking") trackBookingConversion();
 }
 
 function renderSingleServicePage(serviceId) {
