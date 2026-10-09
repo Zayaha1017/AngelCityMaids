@@ -392,8 +392,8 @@ const detailedServices = [
     title: "Deep Cleaning (Most Popular)",
     description: "A more thorough top-to-bottom cleaning service for homes that need extra attention, seasonal resets, or first-time professional service.",
     images: [
-      "img/Stairs.png",
-      "img/cleaningMirrorBathRm.png"
+      "img/stairs.jpg",
+      "img/cleaning-mirror-bathroom.jpg"
     ],
     time: "4 - 8 hours",
     includes: [
@@ -790,7 +790,6 @@ function initPageFeatures(path) {
   initRevealAnimations();
   initInstagramLinks();
   initFAQ();
-  initTestimonials();
   initContactForm();
   initQuoteForm();
   initLightbox();
@@ -894,57 +893,6 @@ function initFAQ() {
 
     if (index === 0) item.classList.add("open");
   });
-}
-
-let testimonialIndex = 0;
-let testimonialTimer = null;
-
-function initTestimonials() {
-  const track = document.querySelector(".testimonial-track");
-  if (!track) return;
-
-  const dotsWrap = document.querySelector(".carousel-dots");
-  const prevBtn = document.querySelector(".carousel-btn.prev");
-  const nextBtn = document.querySelector(".carousel-btn.next");
-
-  function updateCarousel() {
-    track.style.transform = `translateX(-${testimonialIndex * 100}%)`;
-
-    if (dotsWrap) {
-      dotsWrap.querySelectorAll("button").forEach((dot, i) => {
-        dot.classList.toggle("active", i === testimonialIndex);
-      });
-    }
-  }
-
-  function next() {
-    testimonialIndex = (testimonialIndex + 1) % testimonials.length;
-    updateCarousel();
-  }
-
-  function prev() {
-    testimonialIndex = (testimonialIndex - 1 + testimonials.length) % testimonials.length;
-    updateCarousel();
-  }
-
-  prevBtn?.addEventListener("click", prev);
-  nextBtn?.addEventListener("click", next);
-
-  dotsWrap?.querySelectorAll("button").forEach((dot, i) => {
-    dot.addEventListener("click", () => {
-      testimonialIndex = i;
-      updateCarousel();
-      restartTestimonialTimer();
-    });
-  });
-
-  function restartTestimonialTimer() {
-    if (testimonialTimer) clearInterval(testimonialTimer);
-    testimonialTimer = setInterval(next, 5000);
-  }
-
-  updateCarousel();
-  restartTestimonialTimer();
 }
 
 function initContactForm() {
@@ -1124,6 +1072,25 @@ function renderHeroSection() {
   `;
 }
 
+// Cover photo for a service card: the first photo on that service's detail page
+function getServiceCover(serviceId) {
+  const detail = detailedServices.find((s) => s.id === serviceId);
+  return detail?.images?.[0] || detail?.image || "";
+}
+
+function renderServiceCard(service) {
+  return `
+    <a href="${service.link}" class="service-photo-card reveal">
+      <img src="${getServiceCover(service.id)}" alt="${service.title}" loading="lazy" />
+      <div class="service-photo-overlay">
+        <h3>${service.title}</h3>
+        <p>${service.description}</p>
+        <span class="service-photo-btn">Learn More</span>
+      </div>
+    </a>
+  `;
+}
+
 function renderServicesSection() {
   const featuredServices = services.slice(0, 3);
 
@@ -1139,23 +1106,7 @@ function renderServicesSection() {
         </div>
 
         <div class="services-clean-grid" style="margin-top: 3rem;">
-          ${featuredServices.map((service) => `
-            <article class="service-clean-card reveal">
-              <div class="service-clean-icon">
-                <i data-lucide="${service.icon}"></i>
-              </div>
-
-              <h3 class="service-clean-title">${service.title}</h3>
-
-              <p class="service-clean-text">
-                ${service.description}
-              </p>
-
-              <a href="${service.link}" class="service-clean-link">
-                Learn More
-              </a>
-            </article>
-          `).join("")}
+          ${featuredServices.map(renderServiceCard).join("")}
         </div>
 
         <div class="text-center reveal" style="margin-top: 2rem;">
@@ -1235,39 +1186,16 @@ function renderTestimonials() {
           <h2 class="section-title">What Our Clients Say</h2>
         </div>
 
-        <div class="testimonial-wrap reveal" style="margin-top: 3rem;">
-          <div class="testimonial-viewport">
-            <div class="testimonial-track">
-              ${testimonials.map((testimonial) => `
-                <div class="testimonial-slide">
-                  <div class="testimonial-card">
-                    <div class="quote-mark">"</div>
-                    <div class="stars">
-                      ${Array.from({ length: testimonial.rating }).map(() => `<i data-lucide="star"></i>`).join("")}
-                    </div>
-                    <p class="testimonial-text">"${testimonial.text}"</p>
-                    <div>
-                      <h4>${testimonial.name}</h4>
-                      <p class="testimonial-location">${testimonial.location}</p>
-                    </div>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
-          </div>
-
-          <button class="carousel-btn prev" aria-label="Previous testimonial">
-            <i data-lucide="chevron-left"></i>
-          </button>
-          <button class="carousel-btn next" aria-label="Next testimonial">
-            <i data-lucide="chevron-right"></i>
-          </button>
-
-          <div class="carousel-dots">
-            ${testimonials.map((_, i) => `
-              <button class="${i === 0 ? "active" : ""}" aria-label="Go to slide ${i + 1}"></button>
-            `).join("")}
-          </div>
+        <div class="review-grid">
+          ${testimonials.map((testimonial) => `
+            <article class="review-card reveal">
+              <div class="stars">
+                ${Array.from({ length: testimonial.rating }).map(() => `<i data-lucide="star"></i>`).join("")}
+              </div>
+              <p class="review-text">${testimonial.text}</p>
+              <p class="review-author"><strong>${testimonial.name}</strong> · ${testimonial.location}</p>
+            </article>
+          `).join("")}
         </div>
       </div>
     </section>
@@ -1646,23 +1574,7 @@ function renderServicesPage() {
       <section class="section section-lg">
         <div class="container">
           <div class="services-clean-grid">
-            ${services.map((service) => `
-              <article class="service-clean-card reveal">
-                <div class="service-clean-icon">
-                  <i data-lucide="${service.icon}"></i>
-                </div>
-
-                <h3 class="service-clean-title">${service.title}</h3>
-
-                <p class="service-clean-text">
-                  ${service.description}
-                </p>
-
-                <a href="${service.link}" class="service-clean-link">
-                  Learn More
-                </a>
-              </article>
-            `).join("")}
+            ${services.map(renderServiceCard).join("")}
           </div>
         </div>
       </section>
